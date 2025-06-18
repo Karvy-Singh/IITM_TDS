@@ -1,0 +1,25 @@
+name: Daily Auto‑Commit
+
+on:
+  schedule:
+    - cron: '30 14 * * *'  # Runs every day at 14:30 UTC (modify to your desired hour/minute)
+
+jobs:
+  commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: 24f2001127@ds.study.iitm.ac.in update timestamp
+        run: |
+          echo "Last run: $(date -u)" >> run_log.txt
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add run_log.txt
+          git commit -m "Automated daily run at $(date -u)"
+      - name: Push commit
+        uses: ad-m/github-push-action@v0.10.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
