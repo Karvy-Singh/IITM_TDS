@@ -1,27 +1,31 @@
-name: Daily Auto‑Commit
+name: Daily Auto-Commit
 
 on:
   schedule:
-    - cron: '30 14 * * *'  # Adjust as needed (this runs at 14:30 UTC daily)
-  workflow_dispatch:       # <--- This line enables manual run from the GitHub UI
+    - cron: '30 14 * * *'    # 14:30 UTC daily
+  workflow_dispatch:         # manual runs still supported
 
 jobs:
-  commit:
+  daily-commit:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        # checkout v4 persist-credentials: true by default, so `git push` will work
 
-      - name: 24f2001127@ds.study.iitm.ac.in update timestamp
+      - name: Append timestamp
         run: |
           echo "Last run: $(date -u)" >> run_log.txt
+
+      - name: Configure Git identity
+        run: |
           git config user.name "24f2001127@ds.study.iitm.ac.in"
           git config user.email "24f2001127@ds.study.iitm.ac.in"
+
+      - name: Commit & push
+        run: |
           git add run_log.txt
-          git commit -m "24f2001127@ds.study.iitm.ac.in: Automated daily run at $(date -u)" || echo "No changes to commit"
-
-      - name: Push commit
-        uses: ad-m/github-push-action@v0.6.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-
+          # commit will always succeed because we just appended a line
+          git commit -m "24f2001127@ds.study.iitm.ac.in: Automated run at $(date -u)"
+          git push
