@@ -21,7 +21,7 @@ jobs:
           git commit -m "24f2001127@ds.study.iitm.ac.in: Automated daily run at $(date -u)" || echo "No changes to commit"
 
       - name: Push commit
-        uses: ad-m/github-push-action@v0.10.0
+        uses: ad-m/github-push-action@v0.6.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
