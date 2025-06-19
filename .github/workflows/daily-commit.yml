@@ -1,26 +1,28 @@
-name: Daily Auto‑Commit
+# .github/workflows/daily-commit.yml
+name: Daily Commit
 
 on:
   schedule:
-    - cron: '30 14 * * *'  # Runs at 14:30 UTC daily
-  workflow_dispatch:       # Enables manual trigger from GitHub UI
+    # runs daily at midnight UTC; change the time fields (min hour) as desired
+    - cron: '0 0 * * *'
 
 jobs:
-  commit:
+  daily-commit:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
 
-      - name: Update timestamp
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Append timestamp by 24f2001127@ds.study.iitm.ac.in
         run: |
-          echo "Last run: $(date -u)" > last_run.txt
-          git config user.name "24f2001127@ds.study.iitm.ac.in"
-          git config user.email "24f2001127@ds.study.iitm.ac.in"
-          git add last_run.txt
-          git commit -m "24f2001127@ds.study.iitm.ac.in: Automated daily run at $(date -u)" --allow-empty
-          
-      - name: Push commit
-        uses: ad-m/github-push-action@v0.6.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          echo "Automated commit at $(date -u +"%Y-%m-%d %H:%M:%SZ")" >> daily_commit.log
+
+      - name: Commit changes by 24f2001127@ds.study.iitm.ac.in
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add daily_commit.log
+          git commit -m "chore: daily automated commit"
+          git push
+          echo "Commit pushed!"
