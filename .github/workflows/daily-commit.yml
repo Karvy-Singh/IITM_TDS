@@ -1,10 +1,14 @@
 # .github/workflows/daily-commit.yml
 name: Daily Commit
 
+# allow both schedule runs and manual triggers
 on:
   schedule:
-    # runs daily at midnight UTC; change the time fields (min hour) as desired
-    - cron: '0 0 * * *'
+    - cron: '0 0 * * *'    # every day at 00:00 UTC (change as needed)
+  workflow_dispatch: {}   # enables “Run workflow” button
+
+permissions:
+  contents: write         # give the job permission to push commits
 
 jobs:
   daily-commit:
@@ -13,6 +17,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          persist-credentials: true   # ensures checkout supplies the token to push
 
       - name: Append timestamp by 24f2001127@ds.study.iitm.ac.in
         run: |
@@ -20,9 +26,8 @@ jobs:
 
       - name: Commit changes by 24f2001127@ds.study.iitm.ac.in
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "24f2001127@ds.study.iitm.ac.in"
+          git config user.email "24f2001127@ds.study.iitm.ac.in"
           git add daily_commit.log
           git commit -m "chore: daily automated commit"
           git push
-          echo "Commit pushed!"
